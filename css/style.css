@@ -4,6 +4,16 @@
    (https://github.com/gautamrao/gautamrao.github.io), itself based on
    the GitHub Pages "Minimal" theme. */
 
+/* ---------- Colors (change these to recolor the whole site) ---------- */
+:root {
+  --sidebar-bg: #f1eadd;      /* sand sidebar panel */
+  --sidebar-edge: #e2d7c3;    /* thin line on the panel's right edge */
+  --sidebar-rule: #dcd2bc;    /* divider line inside the sidebar */
+  --sidebar-text: #655d50;    /* subtitle text in the sidebar */
+  --link: #1f5fa8;            /* links: the ONLY blue on the page */
+  --link-hover: #0d3a6e;
+}
+
 body {
   background-color: #fff;
   padding: 50px;
@@ -19,8 +29,8 @@ h1 { font-size: 28px; }
 h2 { color: #393939; }
 h3, h4, h5, h6 { color: #494949; }
 
-a { color: #267cb9; text-decoration: none; }
-a:hover, a:focus { color: #004466; }
+a { color: var(--link); text-decoration: none; }
+a:hover, a:focus { color: var(--link-hover); }
 
 strong { color: #222; font-weight: 700; }
 small { font-size: 11px; }
@@ -44,12 +54,36 @@ header {
 header::-webkit-scrollbar { display: none; }
 
 header h1 { margin-bottom: 10px; }
-header .subtitle { margin: 0 0 20px; }
+header .subtitle { margin: 0 0 20px; color: var(--sidebar-text); }
+header hr { background: var(--sidebar-rule); }
+
+/* Sand panel behind the sidebar, running the full height of the window */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: calc((100vw - 1060px) / 2 + 315px);
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--sidebar-edge);
+  z-index: -1;
+}
 
 p.contactinfo { margin: 0 0 10px; }
 p.lastcontactinfo { margin: 0 0 20px; }
 
-header img.headshot { display: block; width: 70%; border-radius: 2px; }
+/* Photo with an even white frame (padding + white background, so the
+   sidebar can't clip it the way it clipped the old shadow-based frame) */
+header img.headshot {
+  display: block;
+  box-sizing: border-box;
+  width: 70%;
+  padding: 4px;
+  background: #fff;
+  border: 1px solid var(--sidebar-edge);
+  border-radius: 4px;
+}
 
 /* ---------- Main content ---------- */
 
@@ -63,7 +97,7 @@ h3.subhead {
   font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #727272;
+  color: #7a7266;
   margin: 30px 0 10px;
 }
 h2 + h3.subhead { margin-top: 0; }
@@ -77,10 +111,10 @@ p.contactinfo.sub { margin-left: 15px; }
   border: 0;
   padding: 0;
   font: inherit;
-  color: #267cb9;
+  color: var(--link);
   cursor: pointer;
 }
-.abs-toggle:hover, .abs-toggle:focus { color: #004466; }
+.abs-toggle:hover, .abs-toggle:focus { color: var(--link-hover); }
 .abstract { display: none; }
 .abstract.open { display: inline; }
 
@@ -105,12 +139,46 @@ footer {
   -webkit-font-smoothing: subpixel-antialiased;
 }
 
+/* ---------- Language toggle (top-right flags) ---------- */
+
+.lang-toggle {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  display: flex;
+  gap: 10px;
+  z-index: 10;
+}
+.lang-toggle a {
+  display: block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px #e5e5e5;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+.lang-toggle a:hover,
+.lang-toggle a:focus,
+.lang-toggle a[aria-current] { opacity: 1; }
+.lang-toggle img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
 /* ---------- Responsive ---------- */
 
 @media print, screen and (max-width: 1160px) {
   div.wrapper { width: auto; margin: 0; }
   header, section, footer { float: none; position: static; width: auto; }
-  header { max-height: none; overflow: visible; }
+  body::before { display: none; }
+  header {
+    max-height: none;
+    overflow: visible;
+    background: var(--sidebar-bg);
+    border: 1px solid var(--sidebar-edge);
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
   header img.headshot { width: 155px; }
   section {
     border: solid #e5e5e5;
@@ -131,5 +199,7 @@ footer {
 }
 
 @media print {
+  .lang-toggle { display: none; }
+  header { background: none; border: 0; padding: 0; }
   body { padding: 0.4in; font-size: 12pt; color: #444; }
 }
